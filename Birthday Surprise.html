@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎉</title>
+    <style>
+        :root {
+            --color-bg-base: #fff5f7;
+            --color-primary: #ff6b9d;
+            --color-secondary: #ffd93d;
+            --color-text: #2d3436;
+            --color-card: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Login Screen */
+        #loginScreen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--color-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: var(--color-primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .login-container p {
+            color: #636e72;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--color-text);
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ff8fab 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #ff7675;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Birthday Screen */
+        #birthdayScreen {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #birthdayScreen.active {
+            display: block;
+        }
+
+        /* Animal Animation */
+        .animal {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            font-size: 60px;
+            z-index: 1000;
+            animation: moveAcross 4s ease-in-out forwards;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes moveAcross {
+            0% {
+                left: -100px;
+            }
+            50% {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* String */
+        .string {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 200px;
+            background: #8e44ad;
+            z-index: 999;
+            animation: pullString 2s ease-in-out 4s forwards;
+        }
+
+        @keyframes pullString {
+            0% {
+                top: -100px;
+            }
+            100% {
+                top: 50%;
+            }
+        }
+
+        /* Balloons */
+        .balloon {
+            position: fixed;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: -100px;
+            z-index: 998;
+            animation: fallDown 3s ease-in 6s forwards;
+        }
+
+        @keyframes fallDown {
+            0% {
+                top: -100px;
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                top: 100vh;
+                opacity: 0;
+            }
+        }
+
+        .balloon::before {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .balloon::after {
+            content: "▼";
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Envelope */
+        .envelope-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            display: none;
+            animation: fadeIn 1s ease-in 9s forwards;
+        }
+
+        .envelope-container.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .envelope {
+            width: 280px;
+            height: 180px;
+            background: #e74c3c;
+            position: relative;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .envelope:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 90px 140px 0 140px;
+            border-color: #c0392b transparent transparent transparent;
+            transform-origin: top;
+            transition: transform 0.6s;
+        }
+
+        .envelope.open::before {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 140px 90px 140px;
+            border-color: transparent transparent #e74c3c transparent;
+        }
+
+        /* Birthday Card */
+        .birthday-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%;
+            max-width: 600px;
+            background: var(--color-card);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            display: none;
+            animation: cardAppear 0.6s ease-out forwards;
+        }
+
+        .birthday-card.show {
+            display: block;
+        }
+
+        @keyframes cardAppear {
+            from {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card-left {
+            flex: 1;
+        }
+
+        .card-left h2 {
+            color: var(--color-primary);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .card-left p {
+            color: var(--color-text);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .card-right {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .card-right h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .gift-code {
+            background: white;
+            color: #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .card-content {
+                flex-direction: row;
+            }
+
+            .card-left, .card-right {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-container h1 {
+                font-size: 2rem;
+            }
+
+            .birthday-card {
+                padding: 25px;
+            }
+
+            .card-left h2 {
+                font-size: 1.8rem;
+            }
+
+            .gift-code {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-container">
+            <h1>🎂</h1>
+            <h1>Special Delivery</h1>
+            <p>Enter your email to unwrap your surprise</p>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                </div>
+                <button type="submit" class="btn" id="loginBtn">
+                    <span id="btnText">Unlock Surprise</span>
+                </button>
+            </form>
+            <div class="error-message" id="errorMessage">Access denied. This surprise is not for you! 🔒</div>
+        </div>
+    </div>
+
+    <!-- Birthday Screen -->
+    <div id="birthdayScreen">
+        <!-- Balloons will be added dynamically -->
+    </div>
+
+    <!-- Envelope -->
+    <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 18px; font-weight: 600;">Click to Open</p>
+        </div>
+    </div>
+
+    <!-- Birthday Card -->
+    <div class="birthday-card" id="birthdayCard">
+        <div class="card-content">
+            <div class="card-left">
+                <h2>🎉 Happy Birthday! 🎉</h2>
+                <p>Wishing you the most amazing birthday!</p>
+                <p>I hope this brings a bit of joy in spite of the snow outside!</p>
+                <p>Enjoy your gift! 🎁</p>
+            </div>
+            <div class="card-right">
+                <h3>Your Gift Code</h3>
+                <div class="gift-code" id="giftCode">Loading...</div>
+                <button class="close-btn" onclick="location.reload()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // ⚠️ REPLACE THESE WITH YOUR FIREBASE CONFIG
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCE-t4Lne5RJp-NfkgoEobY4DE74Olp8dw",
+            authDomain: "birthday-surprise-dac65.firebaseapp.com",
+            projectId: "birthday-surprise-dac65",
+            storageBucket: "birthday-surprise-dac65.firebasestorage.app",
+            messagingSenderId: "564576254741",
+            appId: "1:564576254741:web:eb968571aa81c50ee3871c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const functions = getFunctions(app);
+
+        // Store gift code securely (only after successful login)
+        let secureGiftCode = null;
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            btnText.innerHTML = '<span class="loading"></span>';
+            errorMessage.classList.remove('show');
+
+            try {
+                // Check whitelist in Firestore
+                const whitelistRef = doc(db, 'whitelist', email.replace(/\./g, '_'));
+                const whitelistDoc = await getDoc(whitelistRef);
+
+                if (!whitelistDoc.exists() || !whitelistDoc.data().authorized) {
+                    // Not authorized
+                    errorMessage.classList.add('show');
+                    loginBtn.disabled = false;
+                    btnText.textContent = 'Unlock Surprise';
+                    return;
+                }
+
+                // Get gift code from Firestore (SECURE - only fetched after verification)
+                const userData = whitelistDoc.data();
+                secureGiftCode = userData.giftCode || 'NO-CODE-AVAILABLE';
+
+                // User is authorized - send email via Cloud Function
+                try {
+                    const sendBirthdayEmail = httpsCallable(functions, 'sendBirthdayEmail');
+                    await sendBirthdayEmail({ email: email, giftCode: secureGiftCode });
+                } catch (emailError) {
+                    console.error('Email sending failed:', emailError);
+                    // Continue anyway - show the birthday screen
+                }
+
+                // Show birthday animation
+                showBirthdayAnimation();
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Something went wrong. Please try again.';
+                errorMessage.classList.add('show');
+                loginBtn.disabled = false;
+                btnText.textContent = 'Unlock Surprise';
+            }
+        });
+
+        function showBirthdayAnimation() {
+            // Hide login, show birthday screen
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('birthdayScreen').classList.add('active');
+
+            // Create animal
+            const animal = document.createElement('div');
+            animal.className = 'animal';
+            animal.textContent = '🐶';
+            document.body.appendChild(animal);
+
+            // Create string
+            setTimeout(() => {
+                const string = document.createElement('div');
+                string.className = 'string';
+                document.body.appendChild(string);
+            }, 4000);
+
+            // Create balloons
+            setTimeout(() => {
+                const colors = ['#e74c3c', '#f39c12', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const balloon = document.createElement('div');
+                        balloon.className = 'balloon';
+                        balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        balloon.style.left = Math.random() * 100 + '%';
+                        balloon.style.animationDelay = Math.random() * 0.5 + 's';
+                        document.getElementById('birthdayScreen').appendChild(balloon);
+                    }, i * 200);
+                }
+            }, 6000);
+
+            // Show envelope
+            setTimeout(() => {
+                document.getElementById('envelopeContainer').classList.add('show');
+            }, 9000);
+        }
+
+        // Envelope click
+        document.getElementById('envelope').addEventListener('click', function() {
+            this.classList.add('open');
+            setTimeout(() => {
+                document.getElementById('envelopeContainer').style.display = 'none';
+                document.getElementById('birthdayCard').classList.add('show');
+                // Display the gift code (only available after successful login)
+                document.getElementById('giftCode').textContent = secureGiftCode || 'NO CODE';
+            }, 600);
+        });
+    </script>
+
+</body>
+</html>
