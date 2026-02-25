@@ -139,7 +139,7 @@
             height: 80px;
             font-size: 60px;
             z-index: 1000;
-            animation: moveAcross 4s ease-in-out forwards;
+            animation: moveAcross 4s ease-in-out forwards, 4s moveUp ease-in-out 6s forwards;
             top: 50%;
             transform: translateY(-50%);
         }
@@ -158,17 +158,40 @@
             }
         }
 
+        @keyframes moveUp {
+            0% {
+                top: 50%;
+            }
+            50% {
+                top: 80px;
+            }
+            100% {
+                top: 50%;
+            }
+        }
+
         /* String */
         .string {
             position: fixed;
             top: -100px;
             left: 50%;
             transform: translateX(-50%);
-            width: 2px;
+            width: 3px;
             height: 200px;
-            background: #8e44ad;
+            background: linear-gradient(180deg, #8e44ad 0%, #9b59b6 100%);
             z-index: 999;
             animation: pullString 2s ease-in-out 4s forwards;
+            box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
+        }
+
+        .string::before {
+            content: "🎈";
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: balloonFloat 2s ease-in-out infinite;
         }
 
         @keyframes pullString {
@@ -176,7 +199,16 @@
                 top: -100px;
             }
             100% {
-                top: 50%;
+                top: 33%;
+            }
+        }
+
+        @keyframes balloonFloat {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0px);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-10px);
             }
         }
 
@@ -229,26 +261,33 @@
         /* Envelope */
         .envelope-container {
             position: fixed;
-            top: 50%;
+            top: -300px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 1001;
             display: none;
-            animation: fadeIn 1s ease-in 9s forwards;
+            animation: fallFromTop 1.5s ease-out 9s forwards;
         }
 
         .envelope-container.show {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from {
+        @keyframes fallFromTop {
+            0% {
+                top: -300px;
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5);
             }
-            to {
+            60% {
+                top: calc(50% + 20px);
+            }
+            80% {
+                top: calc(50% - 10px);
+            }
+            100% {
+                top: 50%;
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translateX(-50%) translateY(-50%);
             }
         }
 
@@ -298,9 +337,9 @@
         /* Birthday Card */
         .birthday-card {
             position: fixed;
-            top: 50%;
+            top: -800px;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
+            transform: translateX(-50%);
             width: 90%;
             max-width: 600px;
             background: var(--color-card);
@@ -309,21 +348,31 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
             z-index: 1002;
             display: none;
-            animation: cardAppear 0.6s ease-out forwards;
+            animation: cardFallFromTop 2s ease-out forwards;
         }
 
         .birthday-card.show {
             display: block;
         }
 
-        @keyframes cardAppear {
-            from {
-                transform: translate(-50%, -50%) scale(0);
+        @keyframes cardFallFromTop {
+            0% {
+                top: -800px;
                 opacity: 0;
+                transform: translateX(-50%) rotate(-5deg);
             }
-            to {
-                transform: translate(-50%, -50%) scale(1);
+            60% {
+                top: calc(50% + 30px);
+                transform: translateX(-50%) rotate(2deg);
+            }
+            80% {
+                top: calc(50% - 15px);
+                transform: translateX(-50%) rotate(-1deg);
+            }
+            100% {
+                top: 50%;
                 opacity: 1;
+                transform: translateX(-50%) translateY(-50%) rotate(0deg);
             }
         }
 
@@ -363,12 +412,31 @@
             font-size: 1.3rem;
         }
 
-        .gift-code {
+        .gift-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .gift-item {
             background: white;
-            color: #667eea;
-            padding: 20px;
+            padding: 15px 20px;
             border-radius: 10px;
-            font-size: 1.8rem;
+            text-align: left;
+        }
+
+        .gift-label {
+            color: #764ba2;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .gift-value {
+            color: #667eea;
+            font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 2px;
             font-family: 'Courier New', monospace;
@@ -433,8 +501,8 @@
                 font-size: 1.8rem;
             }
 
-            .gift-code {
-                font-size: 1.3rem;
+            .gift-value {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -483,8 +551,17 @@
                 <p>Enjoy your gift! 🎁</p>
             </div>
             <div class="card-right">
-                <h3>Your Gift Code</h3>
-                <div class="gift-code" id="giftCode">Loading...</div>
+                <h3>🎁 Your Gift Card</h3>
+                <div class="gift-info">
+                    <div class="gift-item">
+                        <div class="gift-label">Code</div>
+                        <div class="gift-value" id="giftCode">Loading...</div>
+                    </div>
+                    <div class="gift-item">
+                        <div class="gift-label">Pin</div>
+                        <div class="gift-value" id="giftPin">Loading...</div>
+                    </div>
+                </div>
                 <button class="close-btn" onclick="location.reload()">Close</button>
             </div>
         </div>
@@ -508,10 +585,10 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const functions = getFunctions(app);
 
-        // Store gift code securely (only after successful login)
+        // Store gift code and pin securely (only after successful login)
         let secureGiftCode = null;
+        let secureGiftPin = null;
 
         // Handle login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -540,18 +617,10 @@
                     return;
                 }
 
-                // Get gift code from Firestore (SECURE - only fetched after verification)
+                // Get gift code and PIN from Firestore (SECURE - only fetched after verification)
                 const userData = whitelistDoc.data();
                 secureGiftCode = userData.giftCode || 'NO-CODE-AVAILABLE';
-
-                // User is authorized - send email via Cloud Function
-                try {
-                    const sendBirthdayEmail = httpsCallable(functions, 'sendBirthdayEmail');
-                    await sendBirthdayEmail({ email: email, giftCode: secureGiftCode });
-                } catch (emailError) {
-                    console.error('Email sending failed:', emailError);
-                    // Continue anyway - show the birthday screen
-                }
+                secureGiftPin = userData.giftPin || 'NO-PIN-AVAILABLE';
 
                 // Show birthday animation
                 showBirthdayAnimation();
@@ -596,12 +665,12 @@
                         document.getElementById('birthdayScreen').appendChild(balloon);
                     }, i * 200);
                 }
-            }, 6000);
+            }, 8000);
 
             // Show envelope
             setTimeout(() => {
                 document.getElementById('envelopeContainer').classList.add('show');
-            }, 9000);
+            }, 1000);
         }
 
         // Envelope click
@@ -610,8 +679,9 @@
             setTimeout(() => {
                 document.getElementById('envelopeContainer').style.display = 'none';
                 document.getElementById('birthdayCard').classList.add('show');
-                // Display the gift code (only available after successful login)
+                // Display the gift code and PIN (only available after successful login)
                 document.getElementById('giftCode').textContent = secureGiftCode || 'NO CODE';
+                document.getElementById('giftPin').textContent = secureGiftPin || 'NO PIN';
             }, 600);
         });
     </script>
